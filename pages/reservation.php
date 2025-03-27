@@ -14,8 +14,19 @@
     'NT' => 'Territoires du Nord-Ouest',
     'YT' => 'Yukon'
   ];
-?>
 
+  $type_chambre_tableau = [
+    '1 lit double',
+    '2 lits doubles',
+    '1 lit Queen',
+    '2 lits Queen',
+    '1 lit King'
+  ];
+
+
+  $erreur = "";
+?>
+   
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -29,6 +40,69 @@
         <a href="../index.php">Retour</a>
     </nav>              
     <h1>Formulaire de réservation</h1>
+
+    <?php echo $erreur; ?>
+    <?php
+        if(isset($_POST['submit'])){
+
+    if ((!isset($_POST['prenom'])) || (!isset($_POST['nom']))){
+        $erreur = "Vous devez remplir les champs Prénom / Nom";
+    }
+
+    if ((!isset($_POST['adresse']))||(!isset($_POST['ville']))){
+        $erreur = "Vous devez remplir les champs adresse / ville";
+    }
+
+    if ((!isset($_POST['province'])) || (!isset($provinces[$_POST['province']]))){
+        $erreur = "Vous devez choisir une province";
+    }
+
+    if (!isset($_POST['codePostal'])){
+        $erreur = "Vous devez ajouter un code postal";
+    }
+
+    if (!isset($_POST['telephone'])){
+        $erreur = "Vous devez ajouter un code postal";
+    }
+
+    if ((!isset($_POST['courriel']))||(!filter_var($_POST['courriel'], FILTER_VALIDATE_EMAIL))){
+        $erreur = "Vous devez ajouter un courriel ou votre courriel n'est pas valide";
+    }
+
+    if (!isset($_POST['typeChambre'])){
+        $erreur = "Vous devez choisir un type de chambre";
+    }
+    else{
+        if (!in_array($_POST['typeChambre'], $type_chambre_tableau)) {
+            $erreur = "Type de chambre invalide.";
+        }
+    }
+
+    if (!isset($_POST['adultes'])||!is_numeric($_POST['adultes'])){
+        $erreur = "Vous devez ajouter un adulte";
+    }
+    
+    if (!isset($_POST['enfants'])||!is_numeric($_POST['enfants'])){
+        $erreur = "Vous devez ajouter un adulte";
+    }
+
+    if (!isset($_POST['dateArrivee'])){
+        $erreur = "Vous devez ajouter une date";
+    }
+
+    if ((!isset($_POST['nombreNuits']))|| (!is_numeric($_POST['nombreNuits']))){
+        $erreur = "Vous devez ajouter un nombre de nuit";
+    }
+
+    echo 'date d\'arrivée : '.htmlspecialchars($_POST['dateArrivee']).'<br>';
+    echo 'nombre de nuits : '.htmlspecialchars($_POST['nombreNuits']).'<br>';
+    echo 'type de chambre :  '.htmlspecialchars($_POST['typeChambre']).'<br>';
+    echo 'nombre d\'adulte : '.htmlspecialchars($_POST['adultes']).'<br>';
+    echo 'nombre d\'enfants : '.htmlspecialchars($_POST['enfants']).'<br>';
+
+    }
+else{
+?>
     <form action="" method="POST">
         <fieldset class="groupe-champs-textes">
         <legend>Informations personnelles</legend>
@@ -106,5 +180,11 @@
         <input type="submit" name="submit" value="Réserver" />
         </fieldset>
     </form>
+
+    <?php
+  }
+  ?>
+
     </body>
 </html>
+
